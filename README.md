@@ -61,9 +61,12 @@ Técnico/Segurança → (para bugs complexos) seções `===` com Tasks Técnicas
 
 ## B) Resultados Finais
 
-**Dashboard LangSmith (público):**
-- Prompt v2: https://smith.langchain.com/prompts/bug_to_user_story_v2
-- Projeto de avaliação: `prompt-optimization-challenge` em https://smith.langchain.com
+**Links públicos no LangSmith:**
+- 🔗 Prompt v2 (público no Hub): **https://smith.langchain.com/hub/diolehner/bug_to_user_story_v2**
+- Projeto de tracing/avaliação: `prompt-optimization-challenge` (15 execuções com traces detalhados)
+- Dataset de avaliação: `prompt-optimization-challenge-eval` (15 exemplos)
+
+_Evidências (dataset, prompt público, métricas ≥0.8 e tracing de 3 exemplos) na pasta_ `screenshots/`.
 
 ### Tabela comparativa v1 (ruim) vs v2 (otimizado)
 
