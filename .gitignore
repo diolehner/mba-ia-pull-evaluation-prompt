@@ -45,6 +45,6 @@ ENV/
 *.log
 
 # Project specific
-screenshots/
+# screenshots/  -> versionado de proposito (evidencias do desafio)
 results/
 .claude/
