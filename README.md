@@ -69,12 +69,12 @@ Técnico/Segurança → (para bugs complexos) seções `===` com Tasks Técnicas
 
 | Métrica      | v1 (ilustrativo) | v2 (obtido) | Status |
 |--------------|:----------------:|:-----------:|:------:|
-| Helpfulness  | 0.45             | 0.88        | ✓ |
-| Correctness  | 0.52             | 0.84        | ✓ |
-| F1-Score     | 0.48             | 0.80        | ✓ |
-| Clarity      | 0.50             | 0.89        | ✓ |
-| Precision    | 0.46             | 0.88        | ✓ |
-| **Média**    | —                | **0.8591**  | ✅ |
+| Helpfulness  | 0.45             | 0.91        | ✓ |
+| Correctness  | 0.52             | 0.86        | ✓ |
+| F1-Score     | 0.48             | 0.82        | ✓ |
+| Clarity      | 0.50             | 0.92        | ✓ |
+| Precision    | 0.46             | 0.90        | ✓ |
+| **Média**    | —                | **0.8802**  | ✅ |
 
 > Métricas derivadas: `Helpfulness = (Clarity + Precision)/2`,
 > `Correctness = (F1 + Precision)/2`. Critério de aprovação: **todas ≥ 0.8**.

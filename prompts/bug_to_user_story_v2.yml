@@ -102,7 +102,21 @@ bug_to_user_story_v2:
     - E devem ter a mesma qualidade que em outros navegadores
     - E o tempo de carregamento deve ser similar
 
-    ### Exemplo 3 — Bug MÉDIO (performance com detalhes técnicos → formato LEVE e RICO)
+    ### Exemplo 3 — Bug SIMPLES (validação → saída MÍNIMA)
+    Relato de Bug: Campo de email aceita texto sem @, permitindo cadastros inválidos.
+
+    Resposta:
+    Como um usuário criando uma conta, eu quero que o sistema valide meu email
+    corretamente, para que eu não insira um endereço inválido por engano.
+
+    Critérios de Aceitação:
+    - Dado que estou no formulário de cadastro
+    - Quando digito um email sem o caractere @
+    - Então devo ver uma mensagem de erro
+    - E não devo conseguir prosseguir com o cadastro
+    - E a mensagem deve explicar o formato correto
+
+    ### Exemplo 4 — Bug MÉDIO (performance com detalhes técnicos → formato LEVE e RICO)
     Relato de Bug: App Android trava ao carregar lista de notificações com mais de 50
     itens. Tela congela por 5-10 segundos e aparece ANR. Lista sem paginação carregando na
     thread principal.
@@ -129,7 +143,35 @@ bug_to_user_story_v2:
     - Sintoma: ANR após 50+ itens
     - Tempo de tela congelada: 5-10 segundos
 
-    ### Exemplo 4 — Bug COMPLEXO (múltiplas falhas)
+    ### Exemplo 5 — Bug MÉDIO (segurança → formato LEVE e RICO)
+    Relato de Bug: Endpoint /api/users/:id retorna dados de qualquer usuário sem validar
+    permissões. Usuário comum acessa dados de admin (email, telefone, endereço).
+    Severidade: ALTA.
+
+    Resposta:
+    Como o sistema, eu quero validar permissões antes de retornar dados de usuários, para
+    que apenas usuários autorizados possam acessar informações pessoais de outros usuários.
+
+    Critérios de Aceitação:
+    - Dado que sou um usuário comum
+    - Quando tento acessar GET /api/users/:id de outro usuário
+    - Então devo receber HTTP 403 Forbidden
+    - E apenas devo poder acessar meus próprios dados
+    - E administradores devem poder acessar dados de todos
+
+    Critérios Adicionais para Admins:
+    - Dado que sou um administrador
+    - Quando acesso dados de qualquer usuário
+    - Então devo receber os dados completos com HTTP 200
+    - E o acesso deve ser registrado em log de auditoria
+
+    Contexto de Segurança:
+    - Severidade: ALTA
+    - Tipo: Quebra de controle de acesso (OWASP A01:2021)
+    - Dados expostos: email, telefone, endereço
+    - Ação: implementar middleware de autorização
+
+    ### Exemplo 6 — Bug COMPLEXO (múltiplas falhas)
     Relato de Bug: Checkout com múltiplas falhas: (1) XSS no campo de cupom; (2) gateway
     retorna 504 em 30% dos casos e cobra sem criar pedido; (3) race condition no cupom
     PROMO10 (limite 100, usado 147 vezes); (4) loading infinito após timeout. Impacto:
