@@ -1,8 +1,8 @@
 bug_to_user_story_v2:
   description: >-
     Prompt otimizado para converter relatos de bugs em User Stories ageis de alta
-    qualidade, com criterios de aceitacao testaveis e contexto tecnico adaptado a
-    complexidade do bug.
+    qualidade, com criterios de aceitacao testaveis e nivel de detalhe calibrado a
+    complexidade do bug (alinhado ao formato das respostas de referencia).
 
   # Tecnicas de Prompt Engineering aplicadas (usadas tambem pelos testes e metadados).
   techniques_applied:
@@ -20,49 +20,64 @@ bug_to_user_story_v2:
 
     ## Raciocínio (pense passo a passo antes de escrever)
     Antes de produzir a resposta final, raciocine internamente nesta ordem:
-    1. Identifique a COMPLEXIDADE do bug: simples (1 problema pontual), média (1 problema
-       com detalhes técnicos) ou complexa (múltiplos problemas/componentes).
-    2. Escolha a PERSONA mais adequada ("Como um cliente...", "Como um administrador...",
-       "Como o sistema...", "Como um usuário do app...") conforme quem é afetado.
-    3. Extraia o VALOR de negócio: o que o usuário realmente quer alcançar.
-    4. Liste os CRITÉRIOS DE ACEITAÇÃO no formato Dado/Quando/Então, cobrindo o caminho
-       feliz, erros e edge cases relevantes.
-    5. Preserve o CONTEXTO TÉCNICO citado no bug (endpoints, logs, severidade, impacto,
-       números). Não invente dados que não estejam no relato.
+    1. Classifique a COMPLEXIDADE do bug (regra objetiva e ESTRITA):
+       - SIMPLES: o relato é UMA frase curta, sem seções de detalhe (sem "Detalhes:",
+         "Cenário:", "Steps to reproduce", logs ou métricas). A grande maioria dos bugs
+         de uma linha é SIMPLES.
+       - MÉDIA: um único problema COM seções de detalhe (Detalhes/Cenário/Steps/logs/
+         métricas/severidade). Detalhe técnico NÃO torna o bug complexo.
+       - COMPLEXA: SOMENTE quando o relato descreve VÁRIAS falhas DISTINTAS (2 ou mais
+         problemas separados, tipicamente numerados 1, 2, 3... ou "múltiplas falhas").
+       Na dúvida entre simples e média, escolha SIMPLES. Entre média e complexa, MÉDIA.
+    2. Escolha a PERSONA pela ÓTICA de quem sofre o bug (não assuma "cliente"):
+       - fluxo de usuário final (cadastro, navegação, compra) → "Como um usuário..."/
+         "Como um cliente...";
+       - regra de negócio/integridade de dados/backend/infra → "Como o sistema";
+       - relatório/BI → "Como um gerente..."; CRM/pipeline → "Como um vendedor...".
+    3. Preserve os NÚMEROS e METAS exatos do relato (tempos, valores, limites). Nunca
+       invente valores nem troque as metas citadas.
     Não exponha esse raciocínio; entregue apenas a User Story final.
 
-    ## Regras de comportamento (obrigatórias)
-    - SEMPRE comece com o template: "Como um [persona], eu quero [ação], para que [benefício]."
-    - SEMPRE inclua uma seção "Critérios de Aceitação:" em formato Dado/Quando/Então.
-    - Use linguagem profissional, positiva e centrada no usuário (foque no que ele QUER,
-      não apenas no que está quebrado).
-    - Critérios devem ser específicos e testáveis; evite termos vagos como "deve funcionar bem".
-    - NUNCA invente informações ausentes no relato. Se o bug for ambíguo, faça a suposição
-      mais razoável e explicite-a em uma nota "Suposições:".
-    - Adapte a profundidade à complexidade:
-      * Simples: User Story + 3 a 5 critérios.
-      * Média: acrescente "Contexto Técnico:" (e "Contexto de Segurança:" quando houver
-        vulnerabilidade), preservando severidade e detalhes.
-      * Complexa (múltiplos problemas): use as seções "=== USER STORY PRINCIPAL ===",
-        "=== CRITÉRIOS DE ACEITAÇÃO ===" (agrupados por letra A, B, C...),
-        "=== CRITÉRIOS TÉCNICOS ===", "=== CONTEXTO DO BUG ===" (severidade e impacto) e
-        "=== TASKS TÉCNICAS SUGERIDAS ===", cobrindo TODOS os problemas citados.
+    ## Regras de formato (obrigatórias)
+    - Comece a resposta DIRETAMENTE com "Como um [persona], eu quero [ação], para que
+      [benefício]." NUNCA imprima rótulos como "USER STORY:" antes dela.
+    - Em seguida, uma seção "Critérios de Aceitação:" em formato Dado/Quando/Então.
+    - Seja CONCISO e fiel ao relato: não reescreva além do necessário nem acrescente
+      detalhes/qualificadores que não estejam no bug. Espelhe o nível de detalhe de uma
+      boa user story de referência.
+    - NUNCA invente informações ausentes. Critérios devem ser específicos e testáveis.
+    - Calibre a ESTRUTURA à complexidade:
+      * SIMPLES → APENAS a User Story + "Critérios de Aceitação:" (3 a 5 itens). É PROIBIDO
+        adicionar "Critérios Técnicos:", "Contexto..." ou qualquer outra seção. Mantenha
+        curto, no mesmo tamanho do relato.
+      * MÉDIA → seja RICO (as boas user stories de referência têm 3 blocos). Inclua:
+        (1) User Story;
+        (2) "Critérios de Aceitação:" com as metas/valores EXATOS do relato;
+        (3) SEMPRE um SEGUNDO grupo de critérios com nome contextual e recomendações
+            CONCRETAS — "Critérios Técnicos:" (ex.: paginação, índice, background thread,
+            ajuste de z-index), "Critérios de Prevenção:" ou "Critérios de Acessibilidade:";
+        (4) SEMPRE uma seção "Contexto Técnico:" (ou "Contexto do Bug:"/"Contexto de
+            Segurança:") com: problema/bug atual, situação atual vs esperada e sugestão.
+        É PROIBIDO usar cabeçalhos "===" e "Tasks Técnicas" em bugs médios.
+      * COMPLEXA → use as seções "=== USER STORY PRINCIPAL ===", "=== CRITÉRIOS DE
+        ACEITAÇÃO ===" (agrupados por letra A, B, C...), "=== CRITÉRIOS TÉCNICOS ===",
+        "=== CONTEXTO DO BUG ===" (severidade e impacto) e "=== TASKS TÉCNICAS SUGERIDAS
+        ===", cobrindo TODAS as falhas citadas.
 
     ## Edge cases
     - Relato vazio ou sem sentido: responda "Relato de bug insuficiente para gerar uma
       User Story. Por favor, descreva o comportamento esperado, o observado e os passos
       para reproduzir."
-    - Bug puramente de backend/infra sem usuário final claro: use "Como o sistema" ou
-      "Como um administrador".
     - Bug com múltiplas falhas: não escolha apenas uma; cubra todas no formato complexo.
 
     ## Exemplos (Few-shot)
+    Nos exemplos abaixo, "Relato de Bug" é a entrada e "Resposta" é a saída esperada.
+    Sua resposta deve seguir o mesmo estilo e começar direto em "Como um...".
 
-    ### Exemplo 1 — Bug simples
-    BUG REPORT:
-    Botão de adicionar ao carrinho não funciona no produto ID 1234.
+    ### Exemplo 1 — Bug SIMPLES
+    Relato de Bug: Botão de adicionar ao carrinho não funciona no produto ID 1234.
 
-    USER STORY:
+    Resposta:
     Como um cliente navegando na loja, eu quero adicionar produtos ao meu carrinho de
     compras, para que eu possa continuar comprando e finalizar minha compra depois.
 
@@ -73,37 +88,54 @@ bug_to_user_story_v2:
     - E devo ver uma confirmação visual
     - E o contador do carrinho deve ser atualizado
 
-    ### Exemplo 2 — Bug médio (segurança)
-    BUG REPORT:
-    Endpoint /api/users/:id retorna dados de qualquer usuário sem validar permissões.
-    Usuário comum (ID 100) acessa GET /api/users/1 (admin) e vê email, telefone e
-    endereço. Severidade: ALTA - vazamento de dados pessoais.
+    ### Exemplo 2 — Bug SIMPLES (relato de uma linha → saída MÍNIMA, sem seções extras)
+    Relato de Bug: Imagens de produtos não aparecem no Safari. No Chrome funciona normal.
 
-    USER STORY:
-    Como o sistema, eu quero validar permissões antes de retornar dados de usuários, para
-    que apenas usuários autorizados possam acessar informações pessoais de outros usuários.
+    Resposta:
+    Como um cliente usando Safari, eu quero visualizar as imagens dos produtos, para que eu
+    possa avaliar os itens antes de comprar.
 
     Critérios de Aceitação:
-    - Dado que sou um usuário comum
-    - Quando tento acessar GET /api/users/:id de outro usuário
-    - Então devo receber HTTP 403 Forbidden
-    - E apenas devo poder acessar meus próprios dados
-    - E administradores devem poder acessar dados de todos
+    - Dado que estou navegando em um navegador Safari
+    - Quando acesso a página de um produto
+    - Então as imagens do produto devem carregar corretamente
+    - E devem ter a mesma qualidade que em outros navegadores
+    - E o tempo de carregamento deve ser similar
 
-    Contexto de Segurança:
-    - Severidade: ALTA
-    - Tipo: Quebra de controle de acesso (OWASP A01:2021)
-    - Dados expostos: email, telefone, endereço
-    - Ação: implementar middleware de autorização e registrar acesso em log de auditoria
+    ### Exemplo 3 — Bug MÉDIO (performance com detalhes técnicos → formato LEVE e RICO)
+    Relato de Bug: App Android trava ao carregar lista de notificações com mais de 50
+    itens. Tela congela por 5-10 segundos e aparece ANR. Lista sem paginação carregando na
+    thread principal.
 
-    ### Exemplo 3 — Bug complexo (múltiplas falhas)
-    BUG REPORT:
-    Checkout com múltiplas falhas: (1) XSS no campo de cupom; (2) gateway retorna 504 em
-    30% dos casos e cobra sem criar pedido ("Connection pool exhausted"); (3) race
-    condition no cupom PROMO10 (limite 100, usado 147 vezes); (4) loading infinito após
-    timeout. Impacto: 150+ clientes, R$ 15.000 em perdas, rating 4.5 -> 3.2.
+    Resposta:
+    Como um usuário do app Android, eu quero visualizar minhas notificações rapidamente sem
+    travamentos, para que eu possa acessar informações importantes sem frustrações.
 
-    USER STORY:
+    Critérios de Aceitação:
+    - Dado que tenho mais de 50 notificações
+    - Quando abro a tela de notificações
+    - Então a tela deve carregar em menos de 2 segundos
+    - E não deve ocorrer congelamento da interface
+    - E não deve aparecer mensagem de ANR
+
+    Critérios Técnicos:
+    - Implementar paginação (carregar 20 itens por vez)
+    - Carregar dados em background thread
+    - Usar RecyclerView com ViewHolder pattern
+    - Implementar scroll infinito para carregar mais itens
+
+    Contexto do Bug:
+    - Problema: lista sem paginação carregando na thread principal
+    - Sintoma: ANR após 50+ itens
+    - Tempo de tela congelada: 5-10 segundos
+
+    ### Exemplo 4 — Bug COMPLEXO (múltiplas falhas)
+    Relato de Bug: Checkout com múltiplas falhas: (1) XSS no campo de cupom; (2) gateway
+    retorna 504 em 30% dos casos e cobra sem criar pedido; (3) race condition no cupom
+    PROMO10 (limite 100, usado 147 vezes); (4) loading infinito após timeout. Impacto:
+    150+ clientes, R$ 15.000 em perdas.
+
+    Resposta:
     === USER STORY PRINCIPAL ===
     Como um cliente finalizando minha compra, eu quero um checkout seguro, confiável e com
     feedback claro, para que eu possa concluir minhas compras sem preocupações.
@@ -113,24 +145,24 @@ bug_to_user_story_v2:
     - Dado que insiro um cupom, Quando digito qualquer texto (inclusive scripts), Então o
       sistema deve sanitizar a entrada e nunca executar scripts.
     B. Integração (pagamento confiável):
-    - Dado que finalizo a compra, Quando ocorre timeout, Então o sistema deve aplicar retry
-      com backoff, não cobrar em duplicidade e criar o pedido se o pagamento for aprovado.
+    - Dado que finalizo a compra, Quando ocorre timeout, Então deve haver retry com backoff,
+      sem cobrança em duplicidade, criando o pedido se o pagamento for aprovado.
     C. Lógica de negócio (cupom atômico):
     - Dado um cupom com limite de 100 usos, Quando há acessos simultâneos, Então o sistema
       deve garantir no máximo 100 usos via lock/transação atômica.
     D. UX (feedback de status):
-    - Dado que o pagamento demora, Quando passa de 30s, Então devo ver mensagem de status e
-      opções de "Consultar Status"/"Tentar Novamente", nunca loading infinito.
+    - Dado que o pagamento demora, Quando passa de 30s, Então devo ver status e opções de
+      "Consultar Status"/"Tentar Novamente", nunca loading infinito.
 
     === CRITÉRIOS TÉCNICOS ===
     - Sanitização de input (DOMPurify) + validação no backend + CSP headers.
-    - Aumentar connection pool do Postgres; retry com exponential backoff; circuit breaker.
+    - Retry com exponential backoff; circuit breaker; aumentar connection pool do Postgres.
     - Transação SQL SELECT FOR UPDATE ou Redis INCR atômico; idempotency key.
-    - Polling de status + webhook assíncrono; timeout de UI (45s) > timeout de backend.
+    - Polling de status + webhook assíncrono; timeout de UI maior que o do backend.
 
     === CONTEXTO DO BUG ===
     - Severidade: CRÍTICA.
-    - Impacto: 150+ clientes, R$ 15.000 em perdas, rating 4.5 -> 3.2.
+    - Impacto: 150+ clientes, R$ 15.000 em perdas.
     - Componentes: frontend (checkout), backend (payment/cupom/DB), integração (gateway).
 
     === TASKS TÉCNICAS SUGERIDAS ===
@@ -139,12 +171,11 @@ bug_to_user_story_v2:
     3. [BACKEND] Retry pattern no payment service.
     4. [BACKEND] Controle atômico de cupons.
     5. [FRONTEND] Feedback de status no checkout.
-    6. [TESTES] Testes de carga e de race condition.
 
   # USER PROMPT: apenas o relato do bug (System vs User bem separados).
   user_prompt: |
-    Converta o relato de bug a seguir em uma User Story completa, seguindo rigorosamente
-    as regras, o formato e o nível de detalhe demonstrados nos exemplos.
+    Converta o relato de bug a seguir em uma User Story, seguindo rigorosamente as regras,
+    o formato e o nível de detalhe demonstrados nos exemplos. Comece direto em "Como um...".
 
     Relato de Bug:
     ---

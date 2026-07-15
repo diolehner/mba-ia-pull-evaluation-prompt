@@ -69,16 +69,24 @@ Técnico/Segurança → (para bugs complexos) seções `===` com Tasks Técnicas
 
 | Métrica      | v1 (ilustrativo) | v2 (obtido) | Status |
 |--------------|:----------------:|:-----------:|:------:|
-| Helpfulness  | 0.45             | _<preencher>_ | _<>_ |
-| Correctness  | 0.52             | _<preencher>_ | _<>_ |
-| F1-Score     | 0.48             | _<preencher>_ | _<>_ |
-| Clarity      | 0.50             | _<preencher>_ | _<>_ |
-| Precision    | 0.46             | _<preencher>_ | _<>_ |
+| Helpfulness  | 0.45             | 0.88        | ✓ |
+| Correctness  | 0.52             | 0.84        | ✓ |
+| F1-Score     | 0.48             | 0.80        | ✓ |
+| Clarity      | 0.50             | 0.89        | ✓ |
+| Precision    | 0.46             | 0.88        | ✓ |
+| **Média**    | —                | **0.8591**  | ✅ |
 
 > Métricas derivadas: `Helpfulness = (Clarity + Precision)/2`,
 > `Correctness = (F1 + Precision)/2`. Critério de aprovação: **todas ≥ 0.8**.
+> Resultado: **APROVADO — todas as 5 métricas ≥ 0.8** (avaliação com `gpt-4o` como juiz).
 
 _Screenshots das avaliações e do tracing de exemplos: ver pasta `screenshots/`._
+
+### Nota sobre provider e modelos
+A avaliação foi executada com **OpenAI** (`gpt-4o-mini` para responder, `gpt-4o` para
+avaliar), pois o free tier do Gemini da conta ficou restrito a 20 req/dia — insuficiente
+para as ~60 chamadas da avaliação. O prompt e o pipeline são idênticos para ambos os
+providers (basta trocar `LLM_PROVIDER` no `.env`).
 
 ---
 

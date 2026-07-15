@@ -73,11 +73,11 @@ class TestPrompts:
         """Verifica se o prompt contém exemplos de entrada/saída (técnica Few-shot)."""
         system_prompt = get_prompt_data()["system_prompt"].lower()
         assert "exemplo" in system_prompt, "Nenhum 'Exemplo' encontrado no prompt"
-        # Exemplos few-shot exigem par entrada/saída explícito.
-        assert "bug report" in system_prompt, "Faltam entradas de exemplo (BUG REPORT)"
-        assert "user story" in system_prompt, "Faltam saídas de exemplo (USER STORY)"
+        # Exemplos few-shot exigem par entrada (relato de bug) / saída (resposta).
+        assert "relato de bug" in system_prompt, "Faltam entradas de exemplo (Relato de Bug)"
+        assert "resposta:" in system_prompt, "Faltam saídas de exemplo (Resposta:)"
         # Pelo menos 2 exemplos para caracterizar few-shot.
-        assert system_prompt.count("bug report") >= 2, (
+        assert system_prompt.count("### exemplo") >= 2, (
             "Few-shot requer ao menos 2 exemplos de entrada/saída"
         )
 
