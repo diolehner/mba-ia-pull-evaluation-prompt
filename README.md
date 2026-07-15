@@ -93,6 +93,46 @@ providers (basta trocar `LLM_PROVIDER` no `.env`).
 
 ---
 
+## Jornada de Otimização (processo iterativo)
+
+Foram necessárias **5 iterações** até todas as métricas ficarem ≥ 0.8. As métricas
+Clarity e Precision passaram cedo; o gargalo foi sempre o **F1-Score** (mede o overlap de
+informação da resposta com a referência). O diagnóstico a cada rodada foi feito comparando
+as saídas geradas com as respostas de referência do dataset.
+
+| Iteração | Mudança principal | F1 médio | Resultado |
+|:---:|---|:---:|:---:|
+| v1 (base) | Prompt ruim do instrutor (sem persona, `{bug_report}` duplicado, sem exemplos) | ~0.48 | ✗ |
+| 1 | Reescrita: persona + Few-shot + CoT + Skeleton | 0.77 | ✗ |
+| 2–3 | Correções estruturais (abaixo) | 0.79 | ✗ |
+| 4 | Bugs simples minimalistas | 0.80 | ✅ (no fio) |
+| 5 | +2 exemplos few-shot (margem) | **0.82** | ✅ (média 0.88) |
+
+**Iteração 1 → 2/3 — dois problemas diagnosticados nas saídas:**
+1. *Vazamento de rótulo:* o modelo imprimia `USER STORY:` no início, mas as referências
+   começam direto em "Como um...". **Fix:** regra explícita para iniciar direto, e exemplos
+   few-shot sem o rótulo.
+2. *Escalada de complexidade:* bugs médios (com "Detalhes:"/"Cenário:") eram tratados como
+   complexos (formato `===` + Tasks Técnicas), divergindo das referências. **Fix:** formato
+   `===` restrito a bugs com **múltiplas falhas distintas**; médios passam a usar formato
+   leve e rico (Critérios de Aceitação + Critérios Técnicos + Contexto).
+
+**Iteração 4 — recall dos bugs simples:** o formato "rico" vazava para bugs simples de uma
+linha (ex.: "Imagens não aparecem no Safari"), adicionando seções que não existem nas
+referências curtas e derrubando a precisão do F1. **Fix:** bug simples = **apenas** User
+Story + Critérios de Aceitação, proibido adicionar seções. Isso levou o F1 a 0.80.
+
+**Iteração 5 — margem:** com F1 exatamente em 0.80 (sem folga para a variância do juiz),
+adicionei **2 exemplos few-shot** cobrindo os padrões que mais oscilavam (validação simples
+e médio de segurança). O F1 subiu para **0.82** e a média para **0.88**, com aprovação
+reproduzível.
+
+**Lição:** o maior ganho de F1 não veio de "melhorar" o texto, mas de **calibrar a
+estrutura da resposta ao nível de detalhe de cada referência** (simples enxuto, médio rico,
+complexo seccionado) — e Few-shot foi a alavanca mais eficaz para ensinar essa calibração.
+
+---
+
 ## C) Como Executar
 
 ### Pré-requisitos
